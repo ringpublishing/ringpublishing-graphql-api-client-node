@@ -1,6 +1,6 @@
 {
     "name": "@ringpublishing/graphql-api-client",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Ring Publishing GraphQL API Client",
     "license": "LGPL-3.0",
     "repository": {
@@ -13,13 +13,17 @@
         "node": ">=14.16"
     },
     "scripts": {
-        "build": "tsc",
+        "build": "npm run generate-types && tsc",
         "lint": "npm run lint:js",
         "lint:js": "eslint --ext .js,.jsx,.ts,.tsx examples/ src/ tests/",
         "lint:js:fix": "npm run lint:js -- --fix",
         "prebuild": "rimraf lib",
         "prepare": "npm run build --silent",
-        "test": "jest --ci --coverage --silent"
+        "test": "jest --ci --coverage --silent",
+        "generate-api-schema": "ts-node src/generate-json-api-schema.ts",
+        "generate-websites-api-types": "graphql-code-generator --config=config/websites-api-codegen.yml",
+        "generate-content-api-types": "graphql-code-generator --config=config/content-api-codegen.yml",
+        "generate-types": "npm run generate-api-schema && npm run generate-websites-api-types && npm run generate-content-api-types"
     },
     "dependencies": {
         "@aws-crypto/sha256-js": "~2.0.0",
@@ -31,6 +35,8 @@
     },
     "devDependencies": {
         "@ringieraxelspringer/eslint-config": "^18.0.0",
+        "@graphql-codegen/cli": "^3.2.1",
+        "@graphql-codegen/typescript": "3.0.1",
         "@ringieraxelspringer/tsconfig": "^5.0.0",
         "@types/jest": "^29.0.0",
         "@types/node": "^14.0.0",
@@ -44,7 +50,11 @@
         "extends": "@ringieraxelspringer/eslint-config",
         "env": {
             "jest": true
-        }
+        },
+        "ignorePatterns": [
+            "src/types/content-api.ts",
+            "src/types/websites-api.ts"
+        ]
     },
     "jest": {
         "preset": "ts-jest"

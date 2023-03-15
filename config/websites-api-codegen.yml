@@ -1,0 +1,6 @@
+schema:
+  - ./websites-api-schema.json
+generates:
+  './src/types/websites-api.ts':
+    plugins:
+      - typescript

@@ -7,3 +7,5 @@ export {
     RingApiGqlClientParams
 } from './ring-gql-api-client';
 export * from './websites-api-client';
+export * as WebsitesApiTypes from './types/websites-api';
+export * as ContentApiTypes from './types/content-api';
