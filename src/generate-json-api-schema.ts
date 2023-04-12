@@ -1,7 +1,7 @@
 import { writeFile } from 'fs/promises';
 import { gql } from 'graphql-tag';
-import { WebsitesApiClient } from './websites-api-client';
-import { ContentApiClient } from './content-api-client';
+import { WebsitesApiClientBuilder } from './websites-api-client-builder';
+import { ContentApiClientBuilder } from './content-api-client-builder';
 
 const websitesApiAccessKey = process.env.bamboo_WEBSITES_API_ACCESS_KEY as string;
 const websitesApiSecretKey = process.env.bamboo_WEBSITES_API_SECRET_KEY as string;
@@ -118,13 +118,19 @@ const schemaQuery = gql`
 `;
 
 (async function run(): Promise<void> {
-    const websitesApiClient = new WebsitesApiClient({ accessKey: websitesApiAccessKey, secretKey: websitesApiSecretKey, spaceUuid: websitesApiSpaceUuid });
-    const websitesApiResponse = await websitesApiClient.query(schemaQuery);
+    const websitesApiClient = new WebsitesApiClientBuilder({
+        accessKey: websitesApiAccessKey, secretKey: websitesApiSecretKey, spaceUuid: websitesApiSpaceUuid
+    }).buildApolloClient();
+
+    const websitesApiResponse = await websitesApiClient.query({ query: schemaQuery });
     const websitesApiJsonSchema = JSON.stringify(websitesApiResponse.data, null, 4);
     await writeFile('websites-api-schema.json', websitesApiJsonSchema);
 
-    const contentApiClient = new ContentApiClient({ accessKey: contentApiAccessKey, secretKey: contentApiSecretKey, spaceUuid: contentApiSpaceUuid });
-    const contentAPiResponse = await contentApiClient.query(schemaQuery);
+    const contentApiClient = new ContentApiClientBuilder({
+        accessKey: contentApiAccessKey, secretKey: contentApiSecretKey, spaceUuid: contentApiSpaceUuid
+    }).buildApolloClient();
+
+    const contentAPiResponse = await contentApiClient.query({ query: schemaQuery });
     const contentApiJsonSchema = JSON.stringify(contentAPiResponse.data, null, 4);
     await writeFile('content-api-schema.json', contentApiJsonSchema);
 })();

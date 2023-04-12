@@ -17,15 +17,15 @@ npm install @ringpublishing/graphql-api-client
 
 ## Introduction
 Two clients are available:
-- WebsitesApiClient (api version 2) for Websites API
-- ContentApiClient (api version 2) for Content API
+- WebsitesApiClientBuilder (api version 2) for Websites API
+- ContentApiClientBuilder (api version 2) for Content API
 
 ## Usage
 
 Look how easy is to use Ring GQL API using this library.
 
 ```typescript
-import { WebsitesApiClient } from '@ringpublishing/graphql-api-client';
+import { WebsitesApiClientBuilder } from '@ringpublishing/graphql-api-client';
 import { gql } from 'graphql-tag';
 
 const accessKey = process.env.ACCESS_KEY!;
@@ -47,11 +47,22 @@ const query = gql`
     }
 `;
 
-const websitesApiClient = new WebsitesApiClient({ accessKey, secretKey, spaceUuid });
+type StoriesResponse = {
+    stories: {
+        edges: [{
+            node: {
+                title: string
+            }
+        }]
+    }
+};
+type Variables = Record<string, unknown>;
+
+const websitesApiClient = new WebsitesApiClientBuilder({ accessKey, secretKey, spaceUuid }).buildApolloClient();
 
 try {
-    const response = await websitesApiClient.query(query);
-    console.log('Data:', response.data);
+    const response = await websitesApiClient.query<StoriesResponse, Variables>({ query });
+    console.log('Data:', response.data.stories);
 } catch (err) {
     console.error('Error:', err);
 }
@@ -60,22 +71,24 @@ try {
 ## Reference
 
 ```
-class WebsitesApiClient or ContentApiClient
+class WebsitesApiClientBuilder or ContentApiClientBuilder
 
     constructor:
     {
         spaceUuid (UUIDv4 string) - Websites Space UUID
         accessKey (UUIDv4 string) - Access Key
         secretKey (UUIDv4 string) - Secret Key
-        timeout (number, default 1000) - Response timeout
-        apiHost (string) - API host, default: api.ringpublishing.com
-        apiProtocol: (RingGqlApiProtocol) - API protocol, default: RingGqlApiProtocol.HTTPS
     } 
 
     methods:
-        query<TResponseData, TVariables>(query: DocumentNode, variables?: TVariables): Promise<RingGqlApiClientResponse<TResponseData>>
-        {
-            query/mutation (DocumentNode): GQL query
-            variables (key/value Object): query variables (optional)
-        }
+        buildApolloClient(): ApolloClient<NormalizedCacheObject>: Return ApolloClient with defined params
+        buildGotClient(): Got: Return Got with defined params
+        setTimeout(timeout: number): Set timeout (default is 1000ms)
+        setRetry(retry: RingGqlApiClientRetryOptions): set retry options (default is: { delay: 1000ms, maxAttempts: 3 })
+        setCache(cache: ApolloCache<NormalizedCacheObject>): (only ApolloClient) set cache option (default used Apollo InMemoryCache)
+        setBatch(batch: RingGqlApiClientBatchOptions): (only ApolloClient) set batch options, when you need to use batch calls, example: { batchMax: 5, batchInterval: 20 })
+             - batchMax: No more than 5 operations per batch (default 5)
+             - batchInterval: Wait no more than 20ms after first batched operation (default 20ms)
+        setApiHost(apiHost: string): set API host (default is: api.ringpublishing.com)
+        setApiProtocol(apiProtocol: RingGqlApiProtocol): set api protocol (default is RingGqlApiProtocol.HTTPS)
 ```

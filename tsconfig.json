@@ -1,3 +1,12 @@
 {
-    "extends": "@ringieraxelspringer/tsconfig"
+    "extends": "@ringieraxelspringer/tsconfig",
+    "compilerOptions": {
+        // @apollo/client doesn't work without dom types, and we use it in our tests
+        // to test that the real persisted query link works. Perhaps we can make this
+        // more tightly scoped later.
+        // and we need @types/zen-observable because we got errors:
+        // apollo-link-timeout/lib/timeoutLink.d.ts:1:23 - error TS2688:
+        // Cannot find type definition file for 'zen-observable'.
+        "lib": ["dom"],
+    }
 }
