@@ -16,6 +16,7 @@ import { URL } from 'url';
 // @ts-ignore
 import { name, version } from '../package.json';
 import { ExtendOptions } from 'got/dist/source/types';
+import { ApolloClientOptions } from '@apollo/client/core/ApolloClient';
 
 const API_HOSTNAME = 'api.ringpublishing.com';
 const DEFAULT_TIMEOUT = 1000;
@@ -66,6 +67,8 @@ export abstract class RingGqlClientBuilder {
     private timeout: number = DEFAULT_TIMEOUT;
 
     private cache: ApolloCache<NormalizedCacheObject> = new InMemoryCache();
+
+    private apolloOptions: ApolloClientOptions<NormalizedCacheObject> | undefined;
 
     private batch?: RingGqlApiClientBatchOptions;
 
@@ -125,7 +128,8 @@ export abstract class RingGqlClientBuilder {
             link: additiveLink,
             name,
             version,
-            cache: this.cache
+            cache: this.cache,
+            ...(this.apolloOptions !== undefined ? this.apolloOptions : {})
         });
     }
 
@@ -141,7 +145,8 @@ export abstract class RingGqlClientBuilder {
             link: batchAdditiveLink,
             name: `${name}-batch`,
             version,
-            cache: this.cache
+            cache: this.cache,
+            ...(this.apolloOptions !== undefined ? this.apolloOptions : {})
         });
     }
 
@@ -181,6 +186,12 @@ export abstract class RingGqlClientBuilder {
 
     public setRetry(retry: RingGqlApiClientRetryOptions): RingGqlClientBuilder {
         this.retry = retry;
+
+        return this;
+    }
+
+    public setApolloClientAdditionalOptions(options: ApolloClientOptions<NormalizedCacheObject>): RingGqlClientBuilder {
+        this.apolloOptions = options;
 
         return this;
     }

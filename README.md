@@ -91,4 +91,5 @@ class WebsitesApiClientBuilder or ContentApiClientBuilder
              - batchInterval: Wait no more than 20ms after first batched operation (default 20ms)
         setApiHost(apiHost: string): set API host (default is: api.ringpublishing.com)
         setApiProtocol(apiProtocol: RingGqlApiProtocol): set api protocol (default is RingGqlApiProtocol.HTTPS)
+        setApolloClientAdditionalOptions(options: ApolloClientOptions<NormalizedCacheObject>): set additional options for ApolloClient
 ```
