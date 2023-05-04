@@ -120,7 +120,9 @@ const schemaQuery = gql`
 (async function run(): Promise<void> {
     const websitesApiClient = new WebsitesApiClientBuilder({
         accessKey: websitesApiAccessKey, secretKey: websitesApiSecretKey, spaceUuid: websitesApiSpaceUuid
-    }).buildApolloClient();
+    })
+        .setApolloClientAdditionalOptions({ defaultOptions: { query: { fetchPolicy: 'no-cache' } } })
+        .buildApolloClient();
 
     const websitesApiResponse = await websitesApiClient.query({ query: schemaQuery });
     const websitesApiJsonSchema = JSON.stringify(websitesApiResponse.data, null, 4);
@@ -128,7 +130,9 @@ const schemaQuery = gql`
 
     const contentApiClient = new ContentApiClientBuilder({
         accessKey: contentApiAccessKey, secretKey: contentApiSecretKey, spaceUuid: contentApiSpaceUuid
-    }).buildApolloClient();
+    })
+        .setApolloClientAdditionalOptions({ defaultOptions: { query: { fetchPolicy: 'no-cache' } } })
+        .buildApolloClient();
 
     const contentAPiResponse = await contentApiClient.query({ query: schemaQuery });
     const contentApiJsonSchema = JSON.stringify(contentAPiResponse.data, null, 4);

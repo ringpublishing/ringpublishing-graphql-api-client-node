@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [2.1.1] - 2023-05-04
+### Changed
+- [@pjarolewski]: Changed setApolloClientAdditionalOptions arguments type to Partial type
+
 ## [2.1.0] - 2023-05-04
 ### Added
 - [@pjarolewski]: Added setApolloClientAdditionalOptions to ClientBuilder for ApolloClient

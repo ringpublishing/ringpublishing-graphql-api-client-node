@@ -1,7 +1,5 @@
 import { gql } from 'graphql-tag';
 import { WebsitesApiClientBuilder } from '../src';
-import { ApolloClientOptions } from '@apollo/client/core/ApolloClient';
-import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
 
 const accessKey = process.env.ACCESS_KEY ?? '';
 const secretKey = process.env.SECRET_KEY ?? '';
@@ -35,7 +33,7 @@ type Variables = Record<string, unknown>;
 (async function run(): Promise<void> {
     const client = new WebsitesApiClientBuilder({ accessKey, secretKey, spaceUuid })
         .setTimeout(2000)
-        .setApolloClientAdditionalOptions({ assumeImmutableResults: true } as ApolloClientOptions<NormalizedCacheObject>)
+        .setApolloClientAdditionalOptions({ defaultOptions: { query: { fetchPolicy: 'no-cache' } } })
         .buildApolloClient();
     const response = await client.query<StoriesResponse, Variables>({ query });
 

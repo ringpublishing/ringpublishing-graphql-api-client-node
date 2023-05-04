@@ -49,6 +49,8 @@ export interface RingGqlApiClientBuilderCreateParams {
     secretKey: string;
 }
 
+export type AdditionalOptions = Partial<ApolloClientOptions<NormalizedCacheObject>>;
+
 export abstract class RingGqlClientBuilder {
     protected abstract readonly apiType: RingGqlApiType;
 
@@ -68,7 +70,7 @@ export abstract class RingGqlClientBuilder {
 
     private cache: ApolloCache<NormalizedCacheObject> = new InMemoryCache();
 
-    private apolloOptions: ApolloClientOptions<NormalizedCacheObject> | undefined;
+    private apolloOptions?: AdditionalOptions = undefined;
 
     private batch?: RingGqlApiClientBatchOptions;
 
@@ -190,7 +192,7 @@ export abstract class RingGqlClientBuilder {
         return this;
     }
 
-    public setApolloClientAdditionalOptions(options: ApolloClientOptions<NormalizedCacheObject>): RingGqlClientBuilder {
+    public setApolloClientAdditionalOptions(options: AdditionalOptions): RingGqlClientBuilder {
         this.apolloOptions = options;
 
         return this;
