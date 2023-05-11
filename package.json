@@ -1,6 +1,6 @@
 {
     "name": "@ringpublishing/graphql-api-client",
-    "version": "2.1.1",
+    "version": "2.2.0",
     "description": "Ring Publishing GraphQL API Client",
     "license": "LGPL-3.0",
     "repository": {
@@ -13,7 +13,7 @@
         "node": ">=14.16"
     },
     "scripts": {
-        "build": "npm run generate-types && tsc",
+        "build": "npm run generate-types && tsc && copyfiles -f src/schemas/*.graphql lib/schemas",
         "lint": "npm run lint:js",
         "lint:js": "npm run generate-types && eslint --ext .js,.jsx,.ts,.tsx examples/ src/ tests/",
         "lint:js:fix": "npm run lint:js -- --fix",
@@ -26,26 +26,28 @@
         "generate-types": "npm run generate-api-schema && npm run generate-websites-api-types && npm run generate-content-api-types"
     },
     "dependencies": {
+        "@apollo/client": "^3.7.10",
         "@aws-crypto/sha256-js": "~2.0.0",
         "@aws-sdk/protocol-http": "~3.215.0",
         "@aws-sdk/signature-v4": "~3.215.0",
-        "got": "~11.8.0",
-        "@apollo/client": "^3.7.10",
         "apollo-link-timeout": "^4.0.0",
         "fetch-aws4": "^1.0.3",
+        "got": "~11.8.0",
         "graphql": "~16.6.0",
         "graphql-tag": "~2.12.0",
         "node-fetch": "^2.6.9"
     },
     "devDependencies": {
-        "@ringieraxelspringer/eslint-config": "^18.0.0",
         "@graphql-codegen/cli": "^3.2.1",
+        "@graphql-codegen/schema-ast": "^3.0.1",
         "@graphql-codegen/typescript": "3.0.1",
+        "@ringieraxelspringer/eslint-config": "^18.0.0",
         "@ringieraxelspringer/tsconfig": "^5.0.0",
         "@types/jest": "^29.0.0",
         "@types/node": "^14.0.0",
         "@types/node-fetch": "^2.6.2",
         "@types/zen-observable": "^0.8.3",
+        "copyfiles": "^2.4.1",
         "jest": "^29.0.0",
         "rimraf": "^3.0.0",
         "ts-jest": "^29.0.0",

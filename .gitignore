@@ -6,5 +6,7 @@
 /node_modules
 /src/types/websites-api.ts
 /src/types/content-api.ts
+/src/schemas/websites-api.graphql
+/src/schemas/content-api.graphql
 /websites-api-schema.json
 /content-api-schema.json

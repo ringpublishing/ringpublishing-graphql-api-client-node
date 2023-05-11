@@ -4,3 +4,6 @@ generates:
   './src/types/content-api.ts':
     plugins:
       - typescript
+  './src/schemas/content-api.graphql':
+    plugins:
+      - schema-ast
