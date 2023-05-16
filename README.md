@@ -82,7 +82,6 @@ class WebsitesApiClientBuilder or ContentApiClientBuilder
 
     methods:
         buildApolloClient(): ApolloClient<NormalizedCacheObject>: Return ApolloClient with defined params
-        buildGotClient(): Got: Return Got with defined params
         setTimeout(timeout: number): Set timeout (default is 1000ms)
         setRetry(retry: RingGqlApiClientRetryOptions): set retry options (default is: { delay: 1000ms, maxAttempts: 3 })
         setCache(cache: ApolloCache<NormalizedCacheObject>): (only ApolloClient) set cache option (default used Apollo InMemoryCache)

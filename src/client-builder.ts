@@ -1,21 +1,15 @@
 import * as ApolloClientCore from '@apollo/client/core';
 import ApolloLinkTimeout from 'apollo-link-timeout';
 import customFetch from './fetch';
-import got, { Got } from 'got';
 import { ApolloCache } from '@apollo/client/cache/core/cache';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client/core';
 import { BatchHttpLink } from '@apollo/client/link/batch-http';
-import { HttpRequest } from '@aws-sdk/protocol-http';
 import { NormalizedCacheObject } from '@apollo/client/cache/inmemory/types';
-import { Options } from 'got/dist/source/as-promise/types';
 import { RetryLink } from '@apollo/client/link/retry';
-import { Sha256 } from '@aws-crypto/sha256-js';
-import { SignatureV4 } from '@aws-sdk/signature-v4';
 import { URL } from 'url';
 // eslint-disable-next-line
 // @ts-ignore
 import { name, version } from '../package.json';
-import { ExtendOptions } from 'got/dist/source/types';
 import { ApolloClientOptions } from '@apollo/client/core/ApolloClient';
 
 const API_HOSTNAME = 'api.ringpublishing.com';
@@ -168,18 +162,6 @@ export abstract class RingGqlClientBuilder {
         });
     }
 
-    private getSigner(): SignatureV4 {
-        return new SignatureV4({
-            credentials: {
-                accessKeyId: this.accessKey,
-                secretAccessKey: this.secretKey
-            },
-            region: 'eu-central-1',
-            service: 'execute-api',
-            sha256: Sha256
-        });
-    }
-
     public setTimeout(timeout: number): RingGqlClientBuilder {
         this.timeout = timeout;
 
@@ -228,43 +210,5 @@ export abstract class RingGqlClientBuilder {
         }
 
         return this.getDefaultClient();
-    }
-
-    public buildGotClient(): Got {
-        const customHeaders = {
-            'accept': 'application/json',
-            'content-type': 'application/json',
-            'host': this.url.host
-        };
-
-        const settings: ExtendOptions = {
-            hooks: {
-                beforeRequest: [
-                    async (options: Options): Promise<void> => {
-                        const httpRequest = new HttpRequest({
-                            hostname: this.url.hostname,
-                            path: this.url.pathname,
-                            protocol: this.url.protocol,
-                            method: 'POST',
-                            headers: customHeaders,
-                            body: options.body
-                        });
-                        const { body, headers } = await this.getSigner().sign(httpRequest, { signingDate: new Date() });
-                        // eslint-disable-next-line require-atomic-updates
-                        options.headers = headers;
-                        // eslint-disable-next-line require-atomic-updates
-                        options.body = body;
-                    }
-                ]
-            },
-            headers: customHeaders,
-            timeout: this.timeout,
-            retry: this.retry.maxAttempts,
-            method: 'POST',
-            throwHttpErrors: false,
-            url: this.url
-        };
-
-        return got.extend(settings);
     }
 }
