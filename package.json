@@ -1,6 +1,6 @@
 {
     "name": "@ringpublishing/graphql-api-client",
-    "version": "2.3.0",
+    "version": "3.0.0",
     "description": "Ring Publishing GraphQL API Client",
     "license": "LGPL-3.0",
     "repository": {
@@ -28,12 +28,8 @@
     },
     "dependencies": {
         "@apollo/client": "^3.7.10",
-        "@aws-crypto/sha256-js": "~2.0.0",
-        "@aws-sdk/protocol-http": "~3.215.0",
-        "@aws-sdk/signature-v4": "~3.215.0",
         "apollo-link-timeout": "^4.0.0",
         "fetch-aws4": "^1.0.3",
-        "got": "~11.8.0",
         "graphql": "~16.6.0",
         "graphql-tag": "~2.12.0",
         "node-fetch": "^2.6.9"
