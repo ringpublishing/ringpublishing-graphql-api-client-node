@@ -23,7 +23,8 @@
         "generate-api-schema": "ts-node src/generate-json-api-schema.ts",
         "generate-websites-api-types": "graphql-code-generator --config=config/websites-api-codegen.yml",
         "generate-content-api-types": "graphql-code-generator --config=config/content-api-codegen.yml",
-        "generate-types": "npm run generate-api-schema && npm run generate-websites-api-types && npm run generate-content-api-types"
+        "generate-videos-api-types": "graphql-code-generator --config=config/videos-api-codegen.yml",
+        "generate-types": "npm run generate-api-schema && npm run generate-websites-api-types && npm run generate-content-api-types && npm run generate-videos-api-types"
     },
     "dependencies": {
         "@apollo/client": "^3.7.10",
@@ -57,7 +58,8 @@
         },
         "ignorePatterns": [
             "src/types/content-api.ts",
-            "src/types/websites-api.ts"
+            "src/types/websites-api.ts",
+            "src/types/videos-api.ts"
         ]
     },
     "jest": {

@@ -2,6 +2,7 @@ import { writeFile } from 'fs/promises';
 import { gql } from 'graphql-tag';
 import { WebsitesApiClientBuilder } from './websites-api-client-builder';
 import { ContentApiClientBuilder } from './content-api-client-builder';
+import { VideosApiClientBuilder } from './videos-api-client-builder';
 
 const websitesApiAccessKey = process.env.bamboo_WEBSITES_API_ACCESS_KEY as string;
 const websitesApiSecretKey = process.env.bamboo_WEBSITES_API_SECRET_KEY as string;
@@ -11,13 +12,20 @@ const contentApiAccessKey = process.env.bamboo_CONTENT_API_ACCESS_KEY as string;
 const contentApiSecretKey = process.env.bamboo_CONTENT_API_SECRET_KEY as string;
 const contentApiSpaceUuid = process.env.bamboo_CONTENT_API_SPACE_UUID as string;
 
+const videosApiAccessKey = process.env.bamboo_VIDEOS_API_ACCESS_KEY as string;
+const videosApiSecretKey = process.env.bamboo_VIDEOS_API_SECRET_KEY as string;
+const videosApiSpaceUuid = process.env.bamboo_VIDEOS_API_SPACE_UUID as string;
+
 const envKeys = [
     websitesApiAccessKey,
     websitesApiSecretKey,
     websitesApiSpaceUuid,
     contentApiAccessKey,
     contentApiSecretKey,
-    contentApiSpaceUuid
+    contentApiSpaceUuid,
+    videosApiAccessKey,
+    videosApiSecretKey,
+    videosApiSpaceUuid
 ];
 
 if (envKeys.some(key => !key)) {
@@ -137,4 +145,14 @@ const schemaQuery = gql`
     const contentAPiResponse = await contentApiClient.query({ query: schemaQuery });
     const contentApiJsonSchema = JSON.stringify(contentAPiResponse.data, null, 4);
     await writeFile('content-api-schema.json', contentApiJsonSchema);
+
+    const videosApiClient = new VideosApiClientBuilder({
+        accessKey: videosApiAccessKey, secretKey: videosApiSecretKey, spaceUuid: videosApiSpaceUuid
+    })
+        .setApolloClientAdditionalOptions({ defaultOptions: { query: { fetchPolicy: 'no-cache' } } })
+        .buildApolloClient();
+
+    const videosAPiResponse = await videosApiClient.query({ query: schemaQuery });
+    const videosApiJsonSchema = JSON.stringify(videosAPiResponse.data, null, 4);
+    await writeFile('videos-api-schema.json', videosApiJsonSchema);
 })();

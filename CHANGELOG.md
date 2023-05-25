@@ -2,9 +2,13 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
-## [3.0.0] - 2023-05-16
+## [3.0.0] - 2023-05-25
 ### Removed
 - [@pjarolewski]: Removed GOT http client
+
+## [2.3.0] - 2023-05-11
+### Added
+- [@mswat]: Added support for Videos API
 
 ## [2.2.0] - 2023-05-11
 ### Added

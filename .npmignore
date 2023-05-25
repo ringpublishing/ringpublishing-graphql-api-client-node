@@ -5,5 +5,7 @@
 /tests
 config/content-api-codegen.yml
 config/websites-api-codegen.yml
+config/videos-api-codegen.yml
 content-api-schema.json
 websites-api-schema.json
+videos-api-schema.json

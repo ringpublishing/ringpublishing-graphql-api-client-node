@@ -22,7 +22,8 @@ export enum RingGqlApiProtocol {
 
 export enum RingGqlApiType {
     CONTENT = 'content',
-    WEBSITES = 'websites'
+    WEBSITES = 'websites',
+    VIDEOS = 'videos'
 }
 
 export interface RingGqlApiClientRetryOptions {
