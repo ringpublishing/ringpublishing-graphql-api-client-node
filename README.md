@@ -25,8 +25,7 @@ Two clients are available:
 Look how easy is to use Ring GQL API using this library.
 
 ```typescript
-import { WebsitesApiClientBuilder } from '@ringpublishing/graphql-api-client';
-import { gql } from 'graphql-tag';
+import { WebsitesApiClientBuilder, gql } from '@ringpublishing/graphql-api-client';
 
 const accessKey = process.env.ACCESS_KEY!;
 const secretKey = process.env.SECRET_KEY!;

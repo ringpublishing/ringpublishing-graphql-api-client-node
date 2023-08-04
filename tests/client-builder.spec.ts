@@ -1,5 +1,4 @@
-import { WebsitesApiClientBuilder } from '../src';
-import { gql } from 'graphql-tag';
+import { gql, WebsitesApiClientBuilder } from '../src';
 import customFetch from '../src/fetch';
 import { Response } from 'node-fetch';
 // eslint-disable-next-line
