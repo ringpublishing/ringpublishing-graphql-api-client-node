@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.3.0] - 2023-11-15
+### Changed
+- [@bfoder]: Update types
+
 ## [3.2.1] - 2023-08-09
 ### Added
 - [@pjarolewski]: Added export of `DocumentNode` type
