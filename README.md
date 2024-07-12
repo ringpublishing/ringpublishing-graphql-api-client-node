@@ -16,9 +16,10 @@ npm install @ringpublishing/graphql-api-client
 ```
 
 ## Introduction
-Two clients are available:
+Three clients are available:
 - WebsitesApiClientBuilder (api version 2) for Websites API
 - ContentApiClientBuilder (api version 2) for Content API
+- VideosApiClientBuilder (api version 1) for Videos API
 
 ## Usage
 

@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [3.3.1] - 2024-07-12
+### Added
+- [@pjarolewski]: Added VideoApiClient to README
+
 ## [3.3.0] - 2023-11-15
 ### Changed
 - [@bfoder]: Update types
