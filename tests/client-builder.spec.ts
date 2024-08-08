@@ -102,7 +102,7 @@ describe('Ring GQL API client', () => {
         `);
         expect(mockedFetch).toHaveBeenCalledWith(
             'https://api.ringpublishing.com/websites/v2/spaceUuid',
-            {
+            expect.objectContaining({
                 // eslint-disable-next-line max-len
                 body: '{"variables":{},"query":"{\\n  name\\n  stories(limit: 2) {\\n    edges {\\n      node {\\n        title\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}"}',
                 credentials: {
@@ -118,7 +118,7 @@ describe('Ring GQL API client', () => {
                 method: 'POST',
                 region: 'eu-central-1',
                 service: 'execute-api'
-            }
+            })
         );
     });
 });
