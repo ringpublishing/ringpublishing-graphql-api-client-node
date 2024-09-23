@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [4.0.0] - 2024-09-18
+### Added
+- [@rkot]: Update types
+
 ## [3.3.2] - 2024-08-08
 ### Added
 - [@jlekstan]: Update types
