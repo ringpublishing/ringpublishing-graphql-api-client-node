@@ -4,7 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 
 ## [4.0.1] - 2025-01-07
 ### Added
-- [@dbucki]: Update types
+- [@dbucki]: Update types + lock `@apollo/client` to version 3.12.6
 
 ## [4.0.0] - 2024-09-18
 ### Added

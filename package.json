@@ -27,7 +27,7 @@
         "generate-types": "npm run generate-api-schema && npm run generate-websites-api-types && npm run generate-content-api-types && npm run generate-videos-api-types"
     },
     "dependencies": {
-        "@apollo/client": "^3.7.10",
+        "@apollo/client": "3.12.6",
         "apollo-link-timeout": "^4.0.0",
         "fetch-aws4": "^1.0.3",
         "graphql": "~16.6.0",
