@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [4.0.2] - 2025-02-25
+### Added
+- [@pjarolewski]: Update types
+
 ## [4.0.1] - 2025-01-07
 ### Added
 - [@dbucki]: Update types + lock `@apollo/client` to version 3.12.6
