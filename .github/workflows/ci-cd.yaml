@@ -1,0 +1,290 @@
+name: CI/CD
+on:
+    push:
+        branches:
+            - main
+            - master
+    pull_request:
+        branches:
+            - "**"
+    workflow_dispatch:
+        inputs:
+            lint-action-enabled:
+                default: true
+                description: Lint Action - whether job is enabled.
+                required: false
+                type: boolean
+            lint-js-enabled:
+                default: true
+                description: Lint JS - whether job is enabled.
+                required: false
+                type: boolean
+            lint-js-show-deprecated-rules:
+                default: false
+                description: Lint JS - show deprecated rules.
+                required: false
+                type: boolean
+            lint-yaml-config-file:
+                description: Lint YAML - location of configuration file.
+                required: false
+                type: string
+            lint-yaml-enabled:
+                default: true
+                description: Lint YAML - whether job is enabled.
+                required: false
+                type: boolean
+            node-version:
+                description: Node version that should be used.
+                required: false
+                type: string
+            npm-registry:
+                default: artifactory
+                description: NPM registry (artifactory / npmjs).
+                required: false
+                type: string
+            test-js-enabled:
+                default: false
+                description: Test JS - whether job is enabled.
+                required: false
+                type: boolean
+            test-js-framework:
+                default: jest
+                description: Test JS - Test framework (custom / jasmine / jasmine-node / jest / mocha).
+                required: false
+                type: string
+concurrency:
+    cancel-in-progress: true
+    group: ${{ github.workflow }}-${{ github.ref }}
+env:
+    ARTIFACTORY_HOST: artifactory.smartdev.ringieraxelspringer.tech/artifactory/api/npm/npm
+    FALLBACK_NODE_VERSION: 14.x
+    NPMJS_HOST: registry.npmjs.org
+    WORKING_DIRECTORY: app
+jobs:
+    prepare:
+        name: Prepare
+        runs-on: ubuntu-latest
+        steps:
+            -
+                id: prepare
+                name: Prepare
+                uses: ringier-axel-springer-pl/sdk-action-prepare@v1
+                with:
+                    architecture: ARM64
+                    is-force-build: false
+        outputs:
+            deps-hash-node: ${{ steps.prepare.outputs.deps-hash-node }}
+            is-force-build: ${{ steps.prepare.outputs.is-force-build }}
+            node-version: 14.x
+            release-type: ${{ steps.prepare.outputs.release-type }}
+            version: ${{ steps.prepare.outputs.version }}
+    install:
+        name: Install
+        needs:
+            - prepare
+        runs-on:
+            - self-hosted
+            - Linux
+            - ubuntu2004
+            - ARM64
+        steps:
+            -
+                name: Clean working directory
+                uses: ringier-axel-springer-pl/sdk-action-clean-directory@v1
+            -
+                name: Install Node
+                uses: ringier-axel-springer-pl/sdk-action-install-node@v1
+                with:
+                    app-version: ${{ needs.prepare.outputs.version }}
+                    deps-hash: ${{ needs.prepare.outputs.deps-hash-node }}
+                    node-version: 14.x
+                    build-command: npm run build --if-present
+                    working-directory: ${{ env.WORKING_DIRECTORY }}
+                env:
+                    WEBSITES_API_ACCESS_KEY: ${{ secrets.WEBSITES_API_ACCESS_KEY }}
+                    WEBSITES_API_SECRET_KEY: ${{ secrets.WEBSITES_API_SECRET_KEY }}
+                    WEBSITES_API_SPACE_UUID: ${{ secrets.WEBSITES_API_SPACE_UUID }}
+                    CONTENT_API_ACCESS_KEY: ${{ secrets.CONTENT_API_ACCESS_KEY }}
+                    CONTENT_API_SECRET_KEY: ${{ secrets.CONTENT_API_SECRET_KEY }}
+                    CONTENT_API_SPACE_UUID: ${{ secrets.CONTENT_API_SPACE_UUID }}
+                    VIDEOS_API_ACCESS_KEY: ${{ secrets.VIDEOS_API_ACCESS_KEY }}
+                    VIDEOS_API_SECRET_KEY: ${{ secrets.VIDEOS_API_SECRET_KEY }}
+                    VIDEOS_API_SPACE_UUID: ${{ secrets.VIDEOS_API_SPACE_UUID }}
+    lint-action:
+        name: Lint Action
+        needs:
+            - install
+            - prepare
+        runs-on: ubuntu-latest
+        steps:
+            -
+                name: Download artifact (application)
+                uses: ringier-axel-springer-pl/sdk-action-artifact-download@v1
+                with:
+                    path: ${{ env.WORKING_DIRECTORY }}
+            -
+                name: Lint Action
+                uses: ringier-axel-springer-pl/sdk-action-lint-action@v1
+                with:
+                    working-directory: ${{ env.WORKING_DIRECTORY }}
+    lint-js:
+        name: Lint JS
+        needs:
+            - install
+            - prepare
+        runs-on:
+            - self-hosted
+            - Linux
+            - ubuntu2004
+            - ARM64
+        steps:
+            -
+                name: Clean working directory
+                uses: ringier-axel-springer-pl/sdk-action-clean-directory@v1
+            -
+                name: Download artifact (application)
+                uses: ringier-axel-springer-pl/sdk-action-artifact-download@v1
+                with:
+                    path: ${{ env.WORKING_DIRECTORY }}
+            -
+                name: Lint JS
+                uses: ringier-axel-springer-pl/sdk-action-lint-js@v1
+                with:
+                    lint-command: npm run lint:js
+                    node-version: 14.x
+                    show-deprecated-rules: ${{ inputs.lint-js-show-deprecated-rules }}
+                    working-directory: ${{ env.WORKING_DIRECTORY }}
+                env:
+                    WEBSITES_API_ACCESS_KEY: ${{ secrets.WEBSITES_API_ACCESS_KEY }}
+                    WEBSITES_API_SECRET_KEY: ${{ secrets.WEBSITES_API_SECRET_KEY }}
+                    WEBSITES_API_SPACE_UUID: ${{ secrets.WEBSITES_API_SPACE_UUID }}
+                    CONTENT_API_ACCESS_KEY: ${{ secrets.CONTENT_API_ACCESS_KEY }}
+                    CONTENT_API_SECRET_KEY: ${{ secrets.CONTENT_API_SECRET_KEY }}
+                    CONTENT_API_SPACE_UUID: ${{ secrets.CONTENT_API_SPACE_UUID }}
+                    VIDEOS_API_ACCESS_KEY: ${{ secrets.VIDEOS_API_ACCESS_KEY }}
+                    VIDEOS_API_SECRET_KEY: ${{ secrets.VIDEOS_API_SECRET_KEY }}
+                    VIDEOS_API_SPACE_UUID: ${{ secrets.VIDEOS_API_SPACE_UUID }}
+    lint-yaml:
+        name: Lint YAML
+        needs:
+            - install
+            - prepare
+        runs-on: ubuntu-latest
+        steps:
+            -
+                name: Download artifact (application)
+                uses: ringier-axel-springer-pl/sdk-action-artifact-download@v1
+                with:
+                    path: ${{ env.WORKING_DIRECTORY }}
+            -
+                name: Lint YAML
+                uses: ringier-axel-springer-pl/sdk-action-lint-yaml@v1
+                with:
+                    config-file: ${{ inputs.lint-yaml-config-file }}
+                    working-directory: ${{ env.WORKING_DIRECTORY }}
+    test-js:
+        name: Test JS
+        needs:
+            - install
+            - prepare
+        runs-on:
+            - self-hosted
+            - Linux
+            - ubuntu2004
+            - ARM64
+        steps:
+            -
+                name: Clean working directory
+                uses: ringier-axel-springer-pl/sdk-action-clean-directory@v1
+            -
+                name: Download artifact (application)
+                uses: ringier-axel-springer-pl/sdk-action-artifact-download@v1
+                with:
+                    path: ${{ env.WORKING_DIRECTORY }}
+            -
+                name: Test JS
+                uses: ringier-axel-springer-pl/sdk-action-test-js@v2
+                with:
+                    node-version: 14.x
+                    test-command: npm run test
+                    test-framework: jest
+                    working-directory: ${{ env.WORKING_DIRECTORY }}
+                env:
+                    WEBSITES_API_ACCESS_KEY: ${{ secrets.WEBSITES_API_ACCESS_KEY }}
+                    WEBSITES_API_SECRET_KEY: ${{ secrets.WEBSITES_API_SECRET_KEY }}
+                    WEBSITES_API_SPACE_UUID: ${{ secrets.WEBSITES_API_SPACE_UUID }}
+                    CONTENT_API_ACCESS_KEY: ${{ secrets.CONTENT_API_ACCESS_KEY }}
+                    CONTENT_API_SECRET_KEY: ${{ secrets.CONTENT_API_SECRET_KEY }}
+                    CONTENT_API_SPACE_UUID: ${{ secrets.CONTENT_API_SPACE_UUID }}
+                    VIDEOS_API_ACCESS_KEY: ${{ secrets.VIDEOS_API_ACCESS_KEY }}
+                    VIDEOS_API_SECRET_KEY: ${{ secrets.VIDEOS_API_SECRET_KEY }}
+                    VIDEOS_API_SPACE_UUID: ${{ secrets.VIDEOS_API_SPACE_UUID }}
+    finalize:
+        if: cancelled() == false
+            && failure() == false
+            && needs.install.result == 'success'
+            && needs.prepare.outputs.release-type != 'skip'
+        name: Finalize
+        needs:
+            - install
+            - lint-action
+            - lint-js
+            - lint-yaml
+            - prepare
+            - test-js
+        permissions:
+            contents: write
+        runs-on: ubuntu-latest
+        steps:
+            -
+                name: Create tag (version)
+                uses: ringier-axel-springer-pl/sdk-action-create-git-tag@v1
+                with:
+                    new-tag: v${{ needs.prepare.outputs.version }}
+    deploy:
+        if: ${{ cancelled() == false && failure() == false && needs.prepare.outputs.release-type != 'skip' }}
+        name: Deploy
+        needs:
+            - finalize
+            - prepare
+        permissions:
+            contents: write
+        runs-on:
+            - self-hosted
+            - Linux
+            - ubuntu2004
+            - ARM64
+        steps:
+            -
+                name: Clean working directory
+                uses: ringier-axel-springer-pl/sdk-action-clean-directory@v1
+            -
+                uses: actions/setup-node@v4
+                with:
+                    node-version: 14.x
+            -
+                name: Download artifact (application)
+                uses: ringier-axel-springer-pl/sdk-action-artifact-download@v1
+                with:
+                    path: ${{ env.WORKING_DIRECTORY }}
+            -
+                name: Publish to NPM
+                env:
+                    REGISTRY_HOST: ${{ inputs.npm-registry == 'artifactory' && env.ARTIFACTORY_HOST || env.NPMJS_HOST }}
+                    REGISTRY_TOKEN: ${{ secrets.NPM_TOKEN }}
+                    WEBSITES_API_ACCESS_KEY: ${{ secrets.WEBSITES_API_ACCESS_KEY }}
+                    WEBSITES_API_SECRET_KEY: ${{ secrets.WEBSITES_API_SECRET_KEY }}
+                    WEBSITES_API_SPACE_UUID: ${{ secrets.WEBSITES_API_SPACE_UUID }}
+                    CONTENT_API_ACCESS_KEY: ${{ secrets.CONTENT_API_ACCESS_KEY }}
+                    CONTENT_API_SECRET_KEY: ${{ secrets.CONTENT_API_SECRET_KEY }}
+                    CONTENT_API_SPACE_UUID: ${{ secrets.CONTENT_API_SPACE_UUID }}
+                    VIDEOS_API_ACCESS_KEY: ${{ secrets.VIDEOS_API_ACCESS_KEY }}
+                    VIDEOS_API_SECRET_KEY: ${{ secrets.VIDEOS_API_SECRET_KEY }}
+                    VIDEOS_API_SPACE_UUID: ${{ secrets.VIDEOS_API_SPACE_UUID }}
+                run: |
+                    echo -e "\n/.github" >> .npmignore
+                    echo -e "\n/.smartdev" >> .npmignore
+                    echo -e "\n//${{ env.REGISTRY_HOST }}/:_authToken=${REGISTRY_TOKEN}" >> .npmrc
+                    npm --registry=https://${{ env.REGISTRY_HOST }}/ publish
+                shell: bash
+                working-directory: ${{ env.WORKING_DIRECTORY }}

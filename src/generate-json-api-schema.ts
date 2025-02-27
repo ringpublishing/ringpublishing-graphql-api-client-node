@@ -4,17 +4,17 @@ import { WebsitesApiClientBuilder } from './websites-api-client-builder';
 import { ContentApiClientBuilder } from './content-api-client-builder';
 import { VideosApiClientBuilder } from './videos-api-client-builder';
 
-const websitesApiAccessKey = process.env.bamboo_WEBSITES_API_ACCESS_KEY as string;
-const websitesApiSecretKey = process.env.bamboo_WEBSITES_API_SECRET_KEY as string;
-const websitesApiSpaceUuid = process.env.bamboo_WEBSITES_API_SPACE_UUID as string;
+const websitesApiAccessKey = process.env.WEBSITES_API_ACCESS_KEY as string;
+const websitesApiSecretKey = process.env.WEBSITES_API_SECRET_KEY as string;
+const websitesApiSpaceUuid = process.env.WEBSITES_API_SPACE_UUID as string;
 
-const contentApiAccessKey = process.env.bamboo_CONTENT_API_ACCESS_KEY as string;
-const contentApiSecretKey = process.env.bamboo_CONTENT_API_SECRET_KEY as string;
-const contentApiSpaceUuid = process.env.bamboo_CONTENT_API_SPACE_UUID as string;
+const contentApiAccessKey = process.env.CONTENT_API_ACCESS_KEY as string;
+const contentApiSecretKey = process.env.CONTENT_API_SECRET_KEY as string;
+const contentApiSpaceUuid = process.env.CONTENT_API_SPACE_UUID as string;
 
-const videosApiAccessKey = process.env.bamboo_VIDEOS_API_ACCESS_KEY as string;
-const videosApiSecretKey = process.env.bamboo_VIDEOS_API_SECRET_KEY as string;
-const videosApiSpaceUuid = process.env.bamboo_VIDEOS_API_SPACE_UUID as string;
+const videosApiAccessKey = process.env.VIDEOS_API_ACCESS_KEY as string;
+const videosApiSecretKey = process.env.VIDEOS_API_SECRET_KEY as string;
+const videosApiSpaceUuid = process.env.VIDEOS_API_SPACE_UUID as string;
 
 const envKeys = [
     websitesApiAccessKey,
@@ -83,14 +83,14 @@ const schemaQuery = gql`
             ...TypeRef
         }
     }
-    
+
     fragment InputValue on __InputValue {
         name
         description
         type { ...TypeRef }
         defaultValue
     }
-    
+
     fragment TypeRef on __Type {
         kind
         name
