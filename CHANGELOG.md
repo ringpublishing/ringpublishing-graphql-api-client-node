@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [4.2.0] - 2025-06-18
+### Changed
+- [@wreszelewski]: Added request compression.
+
 ## [4.1.0] - 2025-02-27
 ### Added
 - [@mkwinta2]: CI/CD

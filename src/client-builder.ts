@@ -1,6 +1,7 @@
 import * as ApolloClientCore from '@apollo/client/core';
 import ApolloLinkTimeout from 'apollo-link-timeout';
 import customFetch from './fetch';
+import gzippingFetch from './gzipping-fetch';
 import { ApolloCache } from '@apollo/client/cache/core/cache';
 import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client/core';
 import { BatchHttpLink } from '@apollo/client/link/batch-http';
@@ -42,6 +43,8 @@ export interface RingGqlApiClientBuilderCreateParams {
     accessKey: string;
 
     secretKey: string;
+
+    compressReqBody?: boolean;
 }
 
 export type AdditionalOptions = Partial<ApolloClientOptions<NormalizedCacheObject>>;
@@ -74,7 +77,9 @@ export abstract class RingGqlClientBuilder {
         maxAttempts: 3
     };
 
-    constructor({ spaceUuid, secretKey, accessKey }: RingGqlApiClientBuilderCreateParams) {
+    private compressReqBody: boolean;
+
+    constructor({ spaceUuid, secretKey, accessKey, compressReqBody = true }: RingGqlApiClientBuilderCreateParams) {
         if ([spaceUuid, secretKey, accessKey].some(i => !i)) {
             throw new Error('Variables spaceUuid, secretKey and accessKey are required');
         }
@@ -82,6 +87,7 @@ export abstract class RingGqlClientBuilder {
         this.spaceUuid = spaceUuid;
         this.secretKey = secretKey;
         this.accessKey = accessKey;
+        this.compressReqBody = compressReqBody;
     }
 
     private get url(): URL {
@@ -90,7 +96,7 @@ export abstract class RingGqlClientBuilder {
 
     private getFetchConfig(): Record<string, unknown> {
         return {
-            fetch: customFetch,
+            fetch: this.compressReqBody ? gzippingFetch : customFetch,
             fetchOptions: {
                 credentials: {
                     accessKeyId: this.accessKey,

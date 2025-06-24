@@ -1,6 +1,8 @@
 import { gql, WebsitesApiClientBuilder } from '../src';
 import customFetch from '../src/fetch';
 import { Response } from 'node-fetch';
+import { gzipSync } from 'zlib';
+
 // eslint-disable-next-line
 // @ts-ignore
 import { name, version } from '../package.json';
@@ -32,6 +34,10 @@ describe('Ring GQL API client', () => {
         jest.useFakeTimers().setSystemTime(new Date('2020-01-01'));
     });
 
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     afterAll(() => {
         jest.useRealTimers();
     });
@@ -59,7 +65,8 @@ describe('Ring GQL API client', () => {
         const client = new WebsitesApiClientBuilder({
             accessKey: 'accessKey',
             secretKey: 'secretKey',
-            spaceUuid: 'spaceUuid'
+            spaceUuid: 'spaceUuid',
+            compressReqBody: false
         }).buildApolloClient();
 
         const query = gql`
@@ -111,6 +118,61 @@ describe('Ring GQL API client', () => {
                 },
                 headers: {
                     'accept': '*/*',
+                    'apollographql-client-name': name,
+                    'apollographql-client-version': version,
+                    'content-type': 'application/json'
+                },
+                method: 'POST',
+                region: 'eu-central-1',
+                service: 'execute-api'
+            })
+        );
+    });
+
+    it('should call gzipped gql query to api', async () => {
+        const mockedFetch = jest.mocked(customFetch);
+
+        mockedFetch.mockImplementation(() => {
+            return Promise.resolve({
+                ok: true,
+                status: 200,
+                text: () => Promise.resolve(JSON.stringify(response))
+            } as unknown as Response);
+        });
+
+        const client = new WebsitesApiClientBuilder({
+            accessKey: 'accessKey',
+            secretKey: 'secretKey',
+            spaceUuid: 'spaceUuid'
+        }).buildApolloClient();
+
+        const query = gql`
+            query {
+                name
+                stories(limit: 2) {
+                    edges {
+                        node {
+                            title
+                        }
+                    }
+                }
+            }
+        `;
+
+        await client.query({ query });
+
+        expect(mockedFetch).toHaveBeenCalledWith(
+            'https://api.ringpublishing.com/websites/v2/spaceUuid',
+            expect.objectContaining({
+                // eslint-disable-next-line max-len
+                body: gzipSync('{"variables":{},"query":"{\\n  name\\n  stories(limit: 2) {\\n    edges {\\n      node {\\n        title\\n        __typename\\n      }\\n      __typename\\n    }\\n    __typename\\n  }\\n}"}'),
+                credentials: {
+                    accessKeyId: 'accessKey',
+                    secretAccessKey: 'secretKey'
+                },
+                headers: {
+                    'accept': '*/*',
+                    'content-encoding': 'gzip',
                     'apollographql-client-name': name,
                     'apollographql-client-version': version,
                     'content-type': 'application/json'

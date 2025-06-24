@@ -78,6 +78,7 @@ class WebsitesApiClientBuilder or ContentApiClientBuilder
         spaceUuid (UUIDv4 string) - Websites Space UUID
         accessKey (UUIDv4 string) - Access Key
         secretKey (UUIDv4 string) - Secret Key
+        compressReqBody (boolean) - compress request body, default: true
     } 
 
     methods:
