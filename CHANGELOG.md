@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [4.2.1] - 2025-12-03
+### Changed
+- [@dbucki]: Added Puls CMS to CODEOWNERS file
+
 ## [4.2.0] - 2025-06-18
 ### Changed
 - [@wreszelewski]: Added request compression.
