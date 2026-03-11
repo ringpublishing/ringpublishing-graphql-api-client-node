@@ -2,6 +2,10 @@
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [4.3.1] - 2026-03-11
+### Added
+- [@pjarolewski]: Update types
+
 ## [4.3.0] - 2025-12-19
 ### Changed
 - [@pjarolewski]: Update GraphQL dependencies
