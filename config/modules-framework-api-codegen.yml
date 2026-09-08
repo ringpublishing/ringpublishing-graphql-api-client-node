@@ -1,0 +1,9 @@
+schema:
+  - ./modules-framework-api-schema.json
+generates:
+  './src/types/modules-framework-api.ts':
+    plugins:
+      - typescript
+  './src/schemas/modules-framework-api.graphql':
+    plugins:
+      - schema-ast
